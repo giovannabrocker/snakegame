@@ -5,6 +5,10 @@ public class Apple {
     Random rand = new Random();
     private int x;
     private int y;
+
+    public Apple(){
+        trocarPosicao();
+    }
     public int getPosicaoX(){
         return this.x;
     }
