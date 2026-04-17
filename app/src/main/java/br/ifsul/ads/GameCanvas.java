@@ -20,6 +20,7 @@ public class GameCanvas extends SurfaceView implements SurfaceHolder.Callback {
     private long lastUpdate = System.currentTimeMillis();
 
     private Bitmap frog;
+    private Apple apple;
     private float frogX, frogY, fDx = 1, fDy = 1;
 
     public GameCanvas(Context ctx, AttributeSet set){
@@ -75,10 +76,11 @@ public class GameCanvas extends SurfaceView implements SurfaceHolder.Callback {
 
         canvas.drawColor(Color.WHITE);
 
-        Paint pincel1 = new Paint(); // essa parte pode ser otimizada para não instanciar a cada atualizacao de tela
-        pincel1.setColor(Color.RED); // podem ter varios pinceis predefinidos e organizados no construtor
+        Paint pincel1 = new Paint();
+        pincel1.setColor(Color.RED);
 
-        canvas.drawCircle(100, 100, 50, pincel1);
+        apple.trocarPosicao();
+        canvas.drawCircle(apple.getPosicaoX(), apple.getPosicaoY(), 50, pincel1);
 
         canvas.drawBitmap(frog, frogX, frogY, new Paint());
     }
