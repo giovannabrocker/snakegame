@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -22,6 +23,7 @@ public class GameCanvas extends SurfaceView implements SurfaceHolder.Callback {
     private Bitmap frog;
     private Apple apple = new Apple();
     private float frogX, frogY, fDx = 1, fDy = 1;
+    private int d = 16;
 
     public GameCanvas(Context ctx, AttributeSet set){
         super(ctx, set);
@@ -30,7 +32,10 @@ public class GameCanvas extends SurfaceView implements SurfaceHolder.Callback {
         surfaceholder.addCallback(this);
 
         frog = BitmapFactory.decodeResource(getResources(), R.drawable.frog_pose1);
-
+        if(frogX == this.apple.getPosicaoX() && frogY == this.apple.getPosicaoX()){
+            this.apple.trocarPosicao();
+            // pontuacao++
+        }
         gameThread = new GameThread(this);
     }
 
@@ -56,13 +61,13 @@ public class GameCanvas extends SurfaceView implements SurfaceHolder.Callback {
     // chamado pela thread de atualizado do jogo
     public void update() {
 
-        float frogSpeed = 40f, deltaTime = deltaTime();
+        float frogSpeed = 20f, deltaTime = deltaTime();
 
         // essa parte precisa ser melhorada pois com muitos elementos vira uma bagunã
         // aqui usar bem a orientação a objetos para evitar dor de cabeça
 
-        frogY += frogSpeed * deltaTime * fDy;
-        frogX += frogSpeed * deltaTime * fDx;
+        frogY += frogSpeed * deltaTime * fDy * this.d;
+        frogX += frogSpeed * deltaTime * fDx * this.d;
 
         if((frogX + 16) >= this.getWidth() || frogX < 0)
             fDx *= -1;
@@ -76,10 +81,10 @@ public class GameCanvas extends SurfaceView implements SurfaceHolder.Callback {
 
         canvas.drawColor(Color.WHITE);
 
-        Paint pincel1 = new Paint();
-        pincel1.setColor(Color.RED);
+        Paint applePaint = new Paint();
+        applePaint.setColor(Color.RED);
 
-        canvas.drawCircle(this.apple.getPosicaoX() * 25, this.apple.getPosicaoY() * 25, 25, pincel1);
+        canvas.drawCircle(this.apple.getPosicaoX() * this.d, this.apple.getPosicaoY() * this.d, 25, applePaint);
 
         canvas.drawBitmap(frog, frogX, frogY, new Paint());
     }
@@ -94,4 +99,15 @@ public class GameCanvas extends SurfaceView implements SurfaceHolder.Callback {
 
         return deltaTime;
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        fDx *= -1;
+        // Força a View a se redesenhar (chama onDraw)
+        invalidate();
+
+        // Retorna true para indicar que o evento foi consumido
+        return true;
+    }
+
 }
